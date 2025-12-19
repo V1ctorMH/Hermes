@@ -1,43 +1,51 @@
-import { View, Text, Pressable, StyleSheet } from "react-native";
-import colors from "../theme/colors";
-
+import { View, Pressable, Text, StyleSheet } from "react-native";
 
 export default function AccessibilityMode({ mode, setMode }) {
-return (
-<View>
-<Text style={styles.label}>Modo de acessibilidade</Text>
-<View style={styles.row}>
-{[
-{ key: "wheelchair", label: "♿ Cadeirante" },
-{ key: "visual", label: "👁️ Visual" }
-].map(item => (
-<Pressable
-key={item.key}
-style={[styles.option, mode === item.key && styles.active]}
-onPress={() => setMode(item.key)}
->
-<Text style={[styles.text, mode === item.key && styles.activeText]}>
-{item.label}
-</Text>
-</Pressable>
-))}
-</View>
-</View>
-);
+  return (
+    <View style={styles.container}>
+      <Pressable
+        style={[
+          styles.button,
+          mode === "wheelchair" && styles.active
+        ]}
+        onPress={() => setMode("wheelchair")}
+      >
+        <Text style={styles.text}>Pessoas com Baixa Mobilidade</Text>
+      </Pressable>
+
+      <Pressable
+        style={[
+          styles.button,
+          mode === "visual" && styles.active
+        ]}
+        onPress={() => setMode("visual")}
+      >
+        <Text style={styles.text}>Pessoas com Deficiência Visual</Text>
+      </Pressable>
+    </View>
+  );
 }
 
-
 const styles = StyleSheet.create({
-label: { fontWeight: "bold", marginBottom: 8 },
-row: { flexDirection: "row", gap: 10 },
-option: {
-flex: 1,
-padding: 14,
-borderRadius: 12,
-backgroundColor: "#E5E7EB",
-alignItems: "center"
-},
-active: { backgroundColor: colors.primary },
-text: { fontWeight: "600" },
-activeText: { color: "#fff" }
+  container: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 12
+  },
+  button: {
+    flex: 1,
+    paddingVertical: 14,
+    marginHorizontal: 4,
+    borderRadius: 12,
+    backgroundColor: "#E5E7EB",
+    alignItems: "center"
+  },
+  active: {
+    backgroundColor: "#2563EB"
+  },
+  text: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#111827"
+  }
 });
