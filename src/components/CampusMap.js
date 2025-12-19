@@ -1,31 +1,51 @@
-import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
-
+import { View, Image, StyleSheet, Dimensions } from "react-native";
 
 const { width } = Dimensions.get("window");
 
+export default function CampusMap({ route, stepIndex }) {
+  return (
+    <View style={styles.container}>
+      <Image
+        source={require("../../assets/campus-map.png")}
+        style={styles.map}
+        resizeMode="contain"
+      />
 
-export default function CampusMap({ show }) {
-if (!show) return null;
-
-
-return (
-<View>
-<Text style={styles.title}>Mapa do Campus</Text>
-<Image
-source={require("../../assets/campus-map.png")}
-style={styles.map}
-resizeMode="contain"
-/>
-</View>
-);
+      {route?.path?.map((point, index) => (
+        <View
+          key={index}
+          style={[
+            styles.dot,
+            { left: point.x, top: point.y },
+            index === stepIndex && styles.activeDot
+          ]}
+        />
+      ))}
+    </View>
+  );
 }
-
 
 const styles = StyleSheet.create({
-title: { fontWeight: "bold", marginBottom: 8 },
-map: {
-width: width * 1.2,
-height: 420,
-borderRadius: 16
-}
+  container: {
+    alignItems: "center",
+    marginBottom: 12
+  },
+  map: {
+    width: width * 1.15,
+    height: 420,
+    borderRadius: 18
+  },
+  dot: {
+    position: "absolute",
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    backgroundColor: "#2563EB"
+  },
+  activeDot: {
+    backgroundColor: "#DC2626",
+    width: 18,
+    height: 18,
+    borderRadius: 9
+  }
 });
