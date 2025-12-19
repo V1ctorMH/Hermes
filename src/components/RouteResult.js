@@ -7,7 +7,7 @@ export default function RouteSteps({ route, calculated }) {
   if (!route) {
     return (
       <Text style={styles.error}>
-        ❌ Nenhuma rota acessível encontrada.
+        Nenhuma rota acessível encontrada.
       </Text>
     );
   }
@@ -15,7 +15,7 @@ export default function RouteSteps({ route, calculated }) {
   return (
     <View>
       <Text style={styles.title}>Resumo</Text>
-      <Text>⏱️ Tempo estimado: {route.time}</Text>
+      <Text>Tempo estimado: {route.time}</Text>
 
       <Text style={styles.stepsTitle}>Passo a passo</Text>
       {route.steps.map((s, i) => (
