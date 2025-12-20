@@ -10,7 +10,7 @@ export default function AccessibilityMode({ mode, setMode }) {
         ]}
         onPress={() => setMode("wheelchair")}
       >
-        <Text style={styles.text}>Pessoas com Baixa Mobilidade</Text>
+        <Text style={styles.text}>Pessoas com Deficiência Visual</Text>
       </Pressable>
 
       <Pressable
@@ -20,7 +20,7 @@ export default function AccessibilityMode({ mode, setMode }) {
         ]}
         onPress={() => setMode("visual")}
       >
-        <Text style={styles.text}>Pessoas com Deficiência Visual</Text>
+        <Text style={styles.text}>Pessoas com Baixa Mobilidade</Text>
       </Pressable>
     </View>
   );
