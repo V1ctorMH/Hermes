@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
-import { ScrollView, Text, StyleSheet, View } from "react-native";
+import {
+  ScrollView,
+  Text,
+  StyleSheet,
+  View,
+  StatusBar
+} from "react-native";
 
 import AccessibilityMode from "../components/AccessibilityMode";
 import LocationPicker from "../components/LocationPicker";
@@ -16,36 +22,49 @@ export default function HomeScreen() {
   const [stepIndex, setStepIndex] = useState(0);
 
   useEffect(() => {
-    if (!from || !to) {
+    if (!from || !to || from === to) {
       setRoute(null);
       setStepIndex(0);
       return;
     }
 
-    const possible = routes.filter(
-      r => r.from === from && r.to === to && r.mode === "wheelchair"
-    );
+    const possible = routes.filter(r => {
+      if (r.from !== from || r.to !== to) return false;
+      if (mode === "wheelchair") return r.type === "accessible";
+      return true;
+    });
 
     setRoute(possible[0] || null);
     setStepIndex(0);
   }, [from, to, mode]);
 
+  useEffect(() => {
+    setStepIndex(0);
+  }, [route]);
+
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Campus Acessível</Text>
-      <Text style={styles.subtitle}>
-        Navegação inclusiva dentro do campus
-      </Text>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" />
 
-      <CampusMap route={route} stepIndex={stepIndex} />
+      <View style={styles.header}>
+        <Text style={styles.title}>Campus Acessível</Text>
+        <Text style={styles.subtitle}>
+          Navegação inclusiva e eficiente dentro do campus
+        </Text>
+      </View>
 
-      <View style={styles.card}>
+      <View style={styles.mapContainer}>
+        <CampusMap route={route} stepIndex={stepIndex} />
+      </View>
+
+      <View style={styles.cardHighlight}>
         <AccessibilityMode mode={mode} setMode={setMode} />
+        <View style={styles.separator} />
         <LocationPicker label="Origem" onSelect={setFrom} />
         <LocationPicker label="Destino" onSelect={setTo} />
       </View>
 
-      <View style={styles.card}>
+      <View style={styles.cardSteps}>
         <RouteSteps
           route={route}
           stepIndex={stepIndex}
@@ -61,27 +80,47 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#F3F4F6",
+    flex: 1,
+    backgroundColor: "#F8FAFC",
     padding: 16
   },
+  header: {
+    marginTop: 20,
+    marginBottom: 20
+  },
   title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    marginBottom: 4
+    fontSize: 34,
+    fontWeight: "900",
+    color: "#1E3A8A"
   },
   subtitle: {
-    fontSize: 14,
-    color: "#6B7280",
-    marginBottom: 12
+    fontSize: 16,
+    color: "#64748B",
+    marginTop: 4
   },
-  card: {
+  mapContainer: {
+    borderRadius: 28,
+    overflow: "hidden",
+    marginBottom: 24,
+    backgroundColor: "#FFF"
+  },
+  cardHighlight: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 16,
-    padding: 16,
-    marginTop: 16,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 4
+    borderRadius: 24,
+    padding: 20,
+    marginBottom: 20
+  },
+  cardSteps: {
+    backgroundColor: "#EFF6FF",
+    borderRadius: 24,
+    padding: 20,
+    marginBottom: 40,
+    borderLeftWidth: 8,
+    borderLeftColor: "#3B82F6"
+  },
+  separator: {
+    height: 1,
+    backgroundColor: "#E5E7EB",
+    marginVertical: 15
   }
 });
