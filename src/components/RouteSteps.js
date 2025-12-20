@@ -10,33 +10,75 @@ export default function RouteSteps({
   from,
   to
 }) {
+
   useEffect(() => {
-    if (mode !== "visual") return;
+    if (mode !== "wheelchair") return;
 
     Speech.stop();
 
-    if (!from || !to) {
+    if (!from && !to) {
       Speech.speak("Selecione a origem e o destino.", { language: "pt-BR" });
       return;
     }
 
-    if (!route) {
-      Speech.speak("Não há rota acessível disponível.", { language: "pt-BR" });
+    if (!from) {
+      Speech.speak("Selecione a origem.", { language: "pt-BR" });
       return;
     }
 
-    const step = route.steps[stepIndex];
+    if (!to) {
+      Speech.speak("Selecione o destino.", { language: "pt-BR" });
+      return;
+    }
+
+    if (from === to) {
+      Speech.speak(
+        "A origem e o destino não podem ser iguais.",
+        { language: "pt-BR" }
+      );
+      return;
+    }
+
+    if (!route) {
+      Speech.speak(
+        "Nenhuma rota acessível encontrada para este trajeto.",
+        { language: "pt-BR" }
+      );
+      return;
+    }
+
+    const step = route.steps?.[stepIndex];
+    if (!step) return;
+
     Speech.speak(
       `${step.text}. Faltam ${step.distance} metros.`,
       { language: "pt-BR", rate: 0.9 }
     );
-  }, [stepIndex, route, mode, from, to]);
+  }, [from, to, route, stepIndex, mode]);
 
-  if (!from || !to)
-    return <Text style={styles.info}>Selecione origem e destino.</Text>;
+
+  if (!from && !to)
+    return <Text style={styles.info}>Selecione a origem e o destino.</Text>;
+
+  if (!from)
+    return <Text style={styles.info}>Selecione a origem.</Text>;
+
+  if (!to)
+    return <Text style={styles.info}>Selecione o destino.</Text>;
+
+  if (from === to)
+    return (
+      <Text style={styles.error}>
+        A origem e o destino não podem ser iguais.
+      </Text>
+    );
 
   if (!route)
-    return <Text style={styles.error}>Nenhuma rota acessível encontrada.</Text>;
+    return (
+      <Text style={styles.error}>
+        Nenhuma rota acessível encontrada.
+      </Text>
+    );
 
   const step = route.steps[stepIndex];
 
@@ -44,12 +86,22 @@ export default function RouteSteps({
     <View>
       <Text style={styles.time}>⏱️ {route.time} min</Text>
 
+      {route.warnings?.length > 0 && (
+        <View style={styles.warningBox}>
+          {route.warnings.map((w, i) => (
+            <Text key={i} style={styles.warning}>
+              ⚠️ {w}
+            </Text>
+          ))}
+        </View>
+      )}
+
       <Text style={styles.step}>{step.text}</Text>
       <Text style={styles.distance}>
-         {step.distance} metros restantes
+        {step.distance} metros restantes
       </Text>
 
-      {mode === "visual" && (
+      {mode === "wheelchair" && (
         <Pressable
           style={styles.secondaryButton}
           onPress={() =>
@@ -76,9 +128,28 @@ export default function RouteSteps({
 }
 
 const styles = StyleSheet.create({
+  info: {
+    color: "#475569",
+    fontSize: 16
+  },
+  error: {
+    color: "#DC2626",
+    fontWeight: "600",
+    fontSize: 16
+  },
   time: {
     color: "#6B7280",
-    marginBottom: 6
+    marginBottom: 8
+  },
+  warningBox: {
+    backgroundColor: "#FEF3C7",
+    borderRadius: 12,
+    padding: 10,
+    marginBottom: 12
+  },
+  warning: {
+    color: "#92400E",
+    fontWeight: "600"
   },
   step: {
     fontSize: 18,
@@ -105,13 +176,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
-    fontWeight: "600"
-  },
-  info: {
-    color: "#6B7280"
-  },
-  error: {
-    color: "#DC2626",
     fontWeight: "600"
   }
 });
