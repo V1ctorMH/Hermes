@@ -3,10 +3,11 @@ Dependências para instalar
 npm install expo
 npm install @react-native-picker/picker
 npx expo install expo-speech
-npx expo install react-dom react-native-web
+npm expo install react-dom react-native-web
 
 Para rodar
 npx expo start --web
+
 
 
 
