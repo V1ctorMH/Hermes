@@ -2,6 +2,7 @@
   "expo": {
     "name": "campus-acessivel",
     "slug": "campus-acessivel",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "platforms": ["ios", "android", "web"]
   }
 }
